@@ -3,8 +3,55 @@
        <link href="client.css" type="text/css" rel="stylesheet">
        <script src="client.js" type="text/javascript"></script>
        <script src="serverstub.js" type="text/javascript"></script>
+       <script id="welcomeview" type="text/view">
+    <div id="page">
+    <div id="logoimage"><img src="wimage.png" alt="logo"></div>
+
+    <div id="forms">
+        <div id="login">
+            <form method = "POST" action="">
+
+                <div class="row"><label>Email </label><input type="text" required/> </div>
+                <div class="row"><label>Password</label><input type="password" pattern=".{8,}" required title="minimum 8 characters"/> </div>
+                <div><button type="submit">Log in</button></div>
+                <div class="clear"></div>
+            </form>
+
+        </div>
+
+
+        <div id="signup">
+            <div class="header">Sign up here</div>
+            <div class="clear"></div>
+            <form method = "POST" action="">
+
+                <div class="row"><label>First name</label> <input type="text" required/></div>
+                <div class="row"><label>Family name</label> <input type="text" required/> </div>
+                <div class="row"><label>Gender </label><select><option>Male</option><option>Female</option></select> </div>
+                <div class="row"><label>City </label><input type="text" required/> </div>
+                <div class="row"><label>Country</label> <input type="text" required/> </div>
+                <div class="row"><label>Email </label><input type="email" required/> </div>
+                <div class="row"><label>Password </label><input type="password" pattern=".{8,}" title="minimum 8 characters" required/> </div>
+                <div class="row"><label>Repeat psw </label><input type="password" pattern=".{8,}" required title="minimum 8 characters"/> </div>
+                <div><button type="submit">Sign up</button></div>
+                <div class="clear"></div>
+            </form>
+
+        </div>
+    </div>
+    </div>
+    </script>
+
+        <script id="profileview" type="text/view"></script>
+
     </head>
     <body>
+
+
+
+
+
+
     </body>
 
 </html>
