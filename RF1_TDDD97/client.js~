@@ -1,0 +1,28 @@
+displayView = function(){
+// the code required to display a view
+};
+window.onload = function(){
+//code that is executed as the page is loaded.
+//You shall put your own custom code here.
+//window.alert() is not allowed to be used in your implementation.
+	var element = document.getElementById("welcomeview");
+	document.body.innerHTML = element.innerHTML
+};
+
+
+var handlers = function(){
+
+    var signup = document.getElementById("signup");
+
+    if (signup != null) {
+        var signupButton = document.getElementById("signupButton");
+
+        signupButton.addEventListener('click', function() {
+            signup.setAttribute("onsubmit", "return false");
+        });
+    }
+}
+
+
+
+

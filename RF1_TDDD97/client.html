@@ -9,11 +9,11 @@
 
     <div id="forms">
         <div id="login">
-            <form method = "POST" action="">
+            <form id=loginform" method = "POST" action="">
 
                 <div class="row"><label>Email </label><input type="text" required/> </div>
                 <div class="row"><label>Password</label><input type="password" pattern=".{8,}" required title="minimum 8 characters"/> </div>
-                <div><button type="submit">Log in</button></div>
+                <div><button type="submit" id="loginButton">Log in</button></div>
                 <div class="clear"></div>
             </form>
 
@@ -23,23 +23,26 @@
         <div id="signup">
             <div class="header">Sign up here</div>
             <div class="clear"></div>
-            <form method = "POST" action="">
+            <form id="signupform" method = "POST" action="">
 
-                <div class="row"><label>First name</label> <input type="text" required/></div>
-                <div class="row"><label>Family name</label> <input type="text" required/> </div>
+                <div class="row"><label>First name</label> <input type="text" id="firstname" required/></div>
+                <div class="row"><label>Family name</label> <input type="text" id="familyname" required/> </div>
                 <div class="row"><label>Gender </label><select><option>Male</option><option>Female</option></select> </div>
-                <div class="row"><label>City </label><input type="text" required/> </div>
-                <div class="row"><label>Country</label> <input type="text" required/> </div>
-                <div class="row"><label>Email </label><input type="email" required/> </div>
-                <div class="row"><label>Password </label><input type="password" pattern=".{8,}" title="minimum 8 characters" required/> </div>
-                <div class="row"><label>Repeat psw </label><input type="password" pattern=".{8,}" required title="minimum 8 characters"/> </div>
-                <div><button type="submit">Sign up</button></div>
+                <div class="row"><label>City </label><input type="text" id="city" required/> </div>
+                <div class="row"><label>Country</label> <input type="text" id="country" required/> </div>
+                <div class="row"><label>Email </label><input type="email" id="signupemail" required/> </div>
+                <div class="row"><label>Password </label><input type="password" id="signuppassword1" pattern=".{8,}" title="minimum 8 characters" required/> </div>
+                <div class="row"><label>Repeat psw </label><input type="password" id="signuppassword2" pattern=".{8,}" required title="minimum 8 characters"/> </div>
+                <div><button type="submit" id="signupButton">Sign up</button></div>
                 <div class="clear"></div>
             </form>
 
         </div>
     </div>
+
     </div>
+    <div id = "feedback"> </div>
+
     </script>
 
         <script id="profileview" type="text/view"></script>
