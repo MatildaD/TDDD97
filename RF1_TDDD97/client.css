@@ -2,67 +2,67 @@ body{
     background-color: chartreuse;
 }
 
+#page{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: 400px;
+}
+
 #logoimage{
     float: left;
+    margin-top:0px;
 }
 
 #forms{
-    width: 250px;
     float: right;
+    width: 250px;
+    height: 400px;
+    margin-left:10px;
+    margin-top:0px;
+    margin-bottom:0px;
 }
 
 #login{
+    margin-top:0px;
+    height:110px;
     background-color: aqua;
 }
 
 #signup{
-
+    margin-top:10px;
+    height:280px;
     background-color: red;
 }
 
 .row{
     width: 100%;
     margin-top: 12px;
-
-
-}
-
-#page{
-    margin: auto;
-    margin-top: 100px;
-    width: 600px;
-    height: 400px;
-
+    font-size: 14px;
 }
 
 input{
     float: right;
-}
-
-button{
-    float: right;
-    margin-right: 0px;
-    margin-top: 5px;
-    clear: right;
+    margin-right: 10px;
+    width:160px;
 }
 
 select{
     float: right;
-    width: 166px;
+    margin-right: 10px;
+    width:160px;
+}
+
+button{
+    float: right;
+    margin-right: 10px;
+    margin-top: 5px;
+    clear:right;
 }
 
 .header{
-    font-size: 15px;
-    float: left;
-    margin-left: 30%;
-    clear: right;
-
+    font-size: 22px;
+    text-align: center;
 }
 
-.clear{
-    clear: both
-}
-
-label{
-    font-size: 13px;
-}
