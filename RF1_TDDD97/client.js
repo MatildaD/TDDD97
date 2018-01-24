@@ -23,14 +23,24 @@ window.onload = function(){
 };
 
 var test = function(formData){
-	var pw1 = formData.signuppassword1.value;
-	var pw2 = formData.signuppassword2.value;
+	var pw1 = formData.password.value;
+	var pw2 = formData.passwordrpt.value;
 	if (pw1 != pw2)
 	{
 		document.getElementById("feedback").innerText = "Passwords do not match";
 	}
 	else
 	{
-	 	document.getElementById("feedback").innerText = "Passwords do match";
+		var user = {
+            'email': formData.email.value,
+            'password': formData.password.value,
+            'firstname': formData.firstname.value,
+            'familyname': formData.familyname.value,
+            'gender': formData.gender.value,
+            'city': formData.city.value,
+            'country': formData.country.value,
+          };
+		var ret=serverstub.signUp(user);
+		document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
 	}
 };
