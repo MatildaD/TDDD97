@@ -39,19 +39,20 @@ body{
 .row{
     width: 100%;
     margin-top: 12px;
+    margin-left:10px;
     font-size: 14px;
 }
 
 input{
     float: right;
-    margin-right: 10px;
-    width:160px;
+    margin-right: 20px;
+    width:140px;
 }
 
 select{
-    float: right;
-    margin-right: 10px;
-    width:160px;
+    float:right;
+    margin-right: 20px;
+    width:140px;
 }
 
 button{
