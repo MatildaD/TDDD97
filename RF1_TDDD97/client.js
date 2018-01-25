@@ -1,10 +1,18 @@
 
 var handlers = function(){
 	var signupform = document.getElementById("signupform");
-	if(signup != null){
+	if(signupform != null){
 		var signupButton = document.getElementById("signupButton");
 		signupButton.addEventListener('click', function(){
 			signupform.setAttribute("onsubmit", "test(this);return false;");
+		});
+	}
+
+	var loginform = document.getElementById("loginform");
+	if(loginform != null){
+		var loginButton = document.getElementById("loginButton");
+		loginButton.addEventListener('click', function(){
+			loginform.setAttribute("onsubmit", "test2(this);return false;");
 		});
 	}
 };
@@ -43,4 +51,8 @@ var test = function(formData){
 		var ret=serverstub.signUp(user);
 		document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
 	}
+};
+
+var test = function(formData){
+		document.getElementById("feedback").innerText = "123";
 };
