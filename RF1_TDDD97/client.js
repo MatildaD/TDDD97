@@ -1,19 +1,14 @@
 
 var handlers = function(){
 	var signupform = document.getElementById("signupform");
-<<<<<<< HEAD
-=======
     console.log(signupform);
->>>>>>> b5b803aafbbbf940dbe8f41f7479f3e5b9fccbf7
 	if(signupform != null){
 		var signupButton = document.getElementById("signupButton");
 		signupButton.addEventListener('click', function(){
 			signupform.setAttribute("onsubmit", "signUp(this);return false;");
 		});
-
 	}
 
-<<<<<<< HEAD
 	var loginform = document.getElementById("loginform");
 	if(loginform != null){
 		var loginButton = document.getElementById("loginButton");
@@ -21,7 +16,7 @@ var handlers = function(){
 			loginform.setAttribute("onsubmit", "test2(this);return false;");
 		});
 	}
-=======
+
     var loginform = document.getElementById("loginform");
     console.log(loginform);
     if (loginform != null) {
@@ -30,7 +25,6 @@ var handlers = function(){
 			loginform.setAttribute("onsubmit", "logIn(this);return false;");
 		});
     }
-
 
     var homebutton = document.getElementById("homebutton");
     homebutton.addEventListener('click', function(){
@@ -61,10 +55,6 @@ var handlers = function(){
         accounttab.style.cssText="display:none";
         browsetab.style.cssText="display:block";
     });
-
-
-
->>>>>>> b5b803aafbbbf940dbe8f41f7479f3e5b9fccbf7
 };
 
 displayView = function(){
@@ -76,18 +66,12 @@ displayView = function(){
         var element = document.getElementById("welcomeview");
         document.body.innerHTML = element.innerHTML;
     }
-
-
-
-
-
 };
 
 var initStorage = function() {
 	if (localStorage.getItem("token") == null) {
         localStorage.setItem("token", "");
     }
-
 };
 
 window.onload = function(){
@@ -122,10 +106,11 @@ var signUp = function(formData){
 	}
 };
 
-<<<<<<< HEAD
+
 var test = function(formData){
 		document.getElementById("feedback").innerText = "123";
-=======
+};
+
 var logIn = function(formData) {
 
     var ret=serverstub.signIn(formData.loginemail.value, formData.loginpassword.value);
@@ -133,9 +118,5 @@ var logIn = function(formData) {
         localStorage.setItem("token", ret.data);
         displayView();
     }
-
     document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
-
-
->>>>>>> b5b803aafbbbf940dbe8f41f7479f3e5b9fccbf7
 };
