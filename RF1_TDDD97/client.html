@@ -45,7 +45,7 @@
             <button type="submit" id= "accountbutton">Account</button>
             <button type="submit" id= "browsebutton">Browse</button>
             </div>
-
+            <div id="loggedinfeedback">Feedback</div>
 
 
             <div id="hometab">
@@ -62,7 +62,7 @@
                     <button type="submit" id="postmessagebutton">Post Message</button>
                 </div>
                 <button type="submit" id="refreshmessages">Refresh messages</button>
-                <div id="showmessages">
+                <div id="showmessages" class="messageboard">
 
                 </div>
 
@@ -84,10 +84,12 @@
 
             </div>
             <div id="browsetab">
+            <div id="searchformdiv">
             <form id="searchform" method = "POST" action="">
             <div class="row"><label>Search Email </label><input type="email" id="searchemail" required/> </div>
             <div><button type="submit" id="searchButton">Search</button></div>
             </form>
+            </div>
 
                 <div id="personalinfo2">
                     <div id="showfirstname2"></div>
@@ -98,19 +100,20 @@
                     <div id="showcountry2"></div>
                 </div>
                 <div id="postonsearch">
+                <div class="header2">Post a message</div>
                 <div id="postmessage2">
                     <textarea id="inputmessage2" rows="3"></textarea>
                     <button type="submit" id="postmessagebutton2">Post Message</button>
                 </div>
                 <button type="submit" id="refreshmessages2">Refresh messages</button>
-                <div id="showmessages2">Show messages 2
+                <div id="showmessages2" class="messageboard">
 
                 </div>
                 </div>
 
 
             </div>
-            <div id="loggedinfeedback">Feedback</div>
+
             </div>
 
         </script>

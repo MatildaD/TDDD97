@@ -38,6 +38,11 @@ var profilehandler = function() {
         hometab.style.cssText="display:block";
         accounttab.style.cssText="display:none";
         browsetab.style.cssText="display:none";
+        homebutton.style.cssText="background-color:cornflowerblue";
+        document.getElementById("accountbutton").style.cssText="background-color:transparent";
+        document.getElementById("browsebutton").style.cssText="background-color:transparent";
+
+
         showUserInfo();
     });
 
@@ -49,6 +54,12 @@ var profilehandler = function() {
         hometab.style.cssText="display:none";
         accounttab.style.cssText="display:block";
         browsetab.style.cssText="display:none";
+        document.getElementById("homebutton").style.cssText="background-color:transparent";
+        document.getElementById("accountbutton").style.cssText="background-color:cornflowerblue";
+        document.getElementById("browsebutton").style.cssText="background-color:transparent";
+        document.getElementById("loggedinfeedback").innerText = "";
+
+
     });
 
     var browsebutton = document.getElementById("browsebutton");
@@ -59,6 +70,12 @@ var profilehandler = function() {
         hometab.style.cssText="display:none";
         accounttab.style.cssText="display:none";
         browsetab.style.cssText="display:block";
+        document.getElementById("homebutton").style.cssText="background-color:transparent";
+        document.getElementById("accountbutton").style.cssText="background-color:transparent";
+        document.getElementById("browsebutton").style.cssText="background-color:cornflowerblue";
+        document.getElementById("loggedinfeedback").innerText = "";
+
+
     });
 
     var passwordform = document.getElementById("passwordform");
@@ -112,6 +129,7 @@ displayView = function(){
         document.body.innerHTML = element.innerHTML;
         profilehandler();
         showUserInfo();
+        refreshMessages();
     } else {
         var element = document.getElementById("welcomeview");
         document.body.innerHTML = element.innerHTML;
@@ -145,6 +163,7 @@ var searchUser = function(formData) {
         document.getElementById("showgender2").innerText = "Gender: " + ret.data.gender;
         document.getElementById("showcity2").innerText = "City: " + ret.data.city;
         document.getElementById("showcountry2").innerText = "Country: " + ret.data.country;
+        refreshMessages2();
 
     } else {
         document.getElementById("postonsearch").style.cssText="display:none";
@@ -194,13 +213,17 @@ var refreshMessages2 = function(){
 
 var postMessage = function(){
     var ret = serverstub.postMessage(localStorage.getItem("token"), document.getElementById("inputmessage").value, null);
+    document.getElementById("inputmessage").value = "";
     document.getElementById("loggedinfeedback").innerText = ret.message;
+    refreshMessages();
 
 }
 
 var postMessage2 = function(){
     var ret = serverstub.postMessage(localStorage.getItem("token"), document.getElementById("inputmessage2").value, document.getElementById("searchemail").value);
+    document.getElementById("inputmessage2").value = "";
     document.getElementById("loggedinfeedback").innerText = ret.message;
+    refreshMessages2();
 
 }
 
