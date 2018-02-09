@@ -66,3 +66,32 @@ def get_messages(email):
     for i in range(len(rows)):
         result.append({'writer':rows[i][1], 'content':rows[i][2]})
     return result
+
+def save_token(email, token):
+    try:
+        cur = g.db.execute("insert into tokens values(?,?)", [email, token])
+        g.db.commit()
+        return True
+    except:
+        return False
+
+def get_email_by_token(token):
+    cursor = g.db.execute("select * from tokens where token = ? ", [token])
+    rows = cursor.fetchall()
+    cursor.close()
+    if len(rows) == 0:
+        return False
+    else:
+        return rows[0][0]
+
+def delete_token(token):
+    cur = g.db.execute("select * from tokens where token = ?", [token])
+    rows = cur.fetchall()
+    cur.close()
+    if len(rows) == 0:
+        return False
+    else:
+        cur = g.db.execute("delete from tokens where token = ?", [token])
+        g.db.commit()
+        return True
+

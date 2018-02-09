@@ -1,11 +1,9 @@
-from flask import app, request
+from flask import request
 from flask import Flask
 import database_helper
 import json
 import random
 
-
-loggedinusers = {}
 
 app = Flask(__name__)
 app.debug = True
@@ -40,9 +38,11 @@ def sign_in():
         return json.dumps({'success':False, 'message':"Wrong password", 'data':""})
     else:
         token = generate_token()
-        loggedinusers[token] = email
-        print loggedinusers
-        return json.dumps({'success':True, 'message':"You successfully signed in", 'data':token})
+        res = database_helper.save_token(email, token)
+        if res:
+            return json.dumps({'success':True, 'message':"You successfully signed in", 'data':token})
+        else:
+            return json.dumps({'success':False, 'message':"Sign in was unsuccessful", 'data':""})
 
 
 @app.route("/signup", methods=['POST'])
@@ -71,10 +71,10 @@ def sign_up():
 @app.route("/signout", methods=['POST'])
 def sign_out():
     token = request.json['token']
-    try:
-        del loggedinusers[token]
+    res = database_helper.delete_token(token)
+    if res:
         return json.dumps({'success':True, 'message':"You successfully signed out", 'data':""})
-    except:
+    else:
         return json.dumps({'success':False, 'message':"Your are not signed in", 'data':""})
 
 
@@ -85,7 +85,11 @@ def change_password():
     oldpassword = request.json['oldpassword']
     newpassword = request.json['newpassword']
 
-    email = loggedinusers[token]
+    try:
+        email = database_helper.get_email_by_token(token)
+    except:
+        return json.dumps({'success':False, 'message':"Token does not exist", 'data':""})
+
     user = database_helper.get_user(email)
     if user[0]['password'] == oldpassword:
         result = database_helper.change_password(email, newpassword)
@@ -98,13 +102,13 @@ def change_password():
 def get_user_data_by_token():
     token = request.json['token']
     try:
-        email = loggedinusers[token]
+        email = database_helper.get_email_by_token(token)
     except:
         return json.dumps({'success':False, 'message':"Token does not exist", 'data':""})
 
-
+    user = database_helper.get_user(email)
     if len(user) != 0:
-        user = database_helper.get_user(email)
+
         user = user[0]
         del user['password']
         return json.dumps({'success':True, 'message':"", 'data':user})
@@ -131,7 +135,7 @@ def get_user_data_by_email():
 def get_user_messages_by_token():
     token = request.json['token']
     try:
-        email = loggedinusers[token]
+        email = database_helper.get_email_by_token(token)
     except:
         return json.dumps({'success':False, 'message':"Token does not exist", 'data':""})
 
@@ -147,7 +151,7 @@ def get_user_messages_by_email():
     token = request.json['token']
     toemail = request.json['email']
     try:
-        fromemail = loggedinusers[token]
+        fromemail = database_helper.get_email_by_token(token)
     except:
         return json.dumps({'success':False, 'message':"Token does not exist", 'data':""})
 
@@ -170,14 +174,17 @@ def post_message():
         return json.dumps({'success':False, 'message':"Recipient does not exist", 'data':""})
 
     try:
-        fromemail = loggedinusers[token]
+        fromemail = database_helper.get_email_by_token(token)
     except:
-        return json.dumps({'success':False, 'message':"You're not logged in (token missing)", 'data':""})
+        return json.dumps({'success':False, 'message':"Token does not exist", 'data':""})
 
 
     result = database_helper.store_message(toemail, fromemail, message)
+    if result:
+        return json.dumps({'success':result, 'message':"You succesfully posted a message", 'data':message})
+    else:
+        return json.dumps({'success':result, 'message':"Your message was not posted", 'data':""})
 
-    return json.dumps({'success':result, 'message':"", 'data':""})
 
 
 
@@ -190,3 +197,5 @@ def generate_token():
         token += TOKEN_STRING[random.randint(0, len(TOKEN_STRING)-1)]
 
     return token
+
+app.run()
