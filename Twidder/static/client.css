@@ -1,0 +1,193 @@
+body{
+    background-color: aliceblue;
+}
+
+#page{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: 400px;
+    background-color: white;
+}
+
+#logoimage{
+    float: left;
+    margin-top:0px;
+}
+
+#forms{
+    float: right;
+    width: 250px;
+    height: 400px;
+    margin-left:10px;
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+#login{
+    margin-top:0px;
+    height:110px;
+
+}
+
+#signup{
+    margin-top:10px;
+    height:280px;
+
+}
+
+.row{
+    width: 100%;
+    margin-top: 12px;
+    margin-left:10px;
+    font-size: 14px;
+}
+
+input{
+    float: right;
+    margin-right: 20px;
+    width:140px;
+}
+
+select{
+    float:right;
+    margin-right: 20px;
+    width:140px;
+}
+
+button{
+    float: right;
+    margin-right: 10px;
+    margin-top: 5px;
+    clear:right;
+}
+
+.header{
+    font-size: 22px;
+    text-align: center;
+}
+
+.header2{
+    font-size: 30px;
+    text-align: center;
+}
+
+#feedback{
+    font-size:14px;
+    margin-left:10px;
+}
+
+#homebutton{
+    width: 100px;
+    margin-left: auto;
+    float: none;
+    background-color: cornflowerblue;
+}
+
+#accountbutton{
+    background-color: transparent;
+    margin-left: auto;
+    width: 100px;
+    float: none;
+}
+
+#browsebutton{
+    background-color: transparent;
+    margin-left: auto;
+    float: none;
+    width: 100px;
+
+
+}
+
+#buttonrow{
+    width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+
+}
+
+#hometab{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: auto;
+    display: block;
+}
+
+#accounttab{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: 200px;
+    display: none;
+}
+
+#browsetab{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    width: 600px;
+    height: 400px;
+    display: none;
+}
+
+#changepassworddiv{
+    width: 350px;
+    height: 200px;
+    margin-left:auto;
+    margin-right: auto;
+    margin-top:0px;
+    margin-bottom:0px;
+
+}
+
+#postonsearch{
+    display: none;
+}
+
+#personalinfo{
+    margin-bottom: 20px;
+}
+
+#searchformdiv{
+    width: 270px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+
+}
+
+#postmessage2{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.messageboard{
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    margin-top: 50px;
+    overflow: auto;
+    width: 100%;
+    margin-top: 20px;
+}
+
+textarea{
+    width: 100%;
+
+}
+
+#loggedinfeedback{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    float: none;
+    height: 50px;
+    text-align: center;
+;
+}
