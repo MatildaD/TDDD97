@@ -1,5 +1,6 @@
 from flask import request
 from flask import Flask
+from flask_sockets import Sockets
 import database_helper
 import json
 import random
@@ -7,7 +8,13 @@ import random
 
 app = Flask(__name__)
 app.debug = True
+sockets = Sockets(app)
 
+@sockets.route('/echo')
+def echo_sockets(ws):
+    while True:
+        message = ws.recieve()
+        ws.send(message)
 
 @app.before_request
 def before_request():
@@ -94,7 +101,10 @@ def change_password():
     user = database_helper.get_user(email)
     if user[0]['password'] == oldpassword:
         result = database_helper.change_password(email, newpassword)
-        return json.dumps({'success':result, 'message':"", 'data':""})
+        if result:
+            return json.dumps({'success':result, 'message':"Password successfully changed", 'data':""})
+        else:
+            return json.dumps({'success':result, 'message':"Password change failed", 'data':""})
     else:
         return json.dumps({'success':False, 'message':"Old passwords do not match", 'data':""})
 
@@ -158,7 +168,7 @@ def get_user_messages_by_email():
 
     user = database_helper.get_user(toemail)
     if len(user) == 0:
-        return json.dumps({'success':False, 'message':"Recipient does not exist", 'data':""})
+        return json.dumps({'success':False, 'message':"Recipient does not exist (getusermessagesbyemail)", 'data':""})
 
     messages = database_helper.get_messages(toemail)
     return json.dumps({'success':True, 'message':"", 'data':messages})
@@ -170,9 +180,12 @@ def post_message():
     toemail = request.json['email']
     message = request.json['message']
 
+    if toemail == "":
+        toemail = database_helper.get_email_by_token(token)
+
     user = database_helper.get_user(toemail)
     if len(user) == 0:
-        return json.dumps({'success':False, 'message':"Recipient does not exist", 'data':""})
+        return json.dumps({'success':False, 'message':"Recipient does not exist (postmessage)", 'data':""})
 
     try:
         fromemail = database_helper.get_email_by_token(token)
@@ -199,4 +212,4 @@ def generate_token():
 
     return token
 
-app.run()
+#app.run()

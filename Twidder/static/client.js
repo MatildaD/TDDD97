@@ -9,21 +9,12 @@ var handlers = function(){
 		});
 	}
 
-	var loginform = document.getElementById("loginform");
-	if(loginform != null){
-		var loginButton = document.getElementById("loginButton");
-		loginButton.addEventListener('click', function(){
-			loginform.setAttribute("onsubmit", "test2(this);return false;");
-		});
-	}
 
     var loginform = document.getElementById("loginform");
     console.log(loginform);
     if (loginform != null) {
         var loginButton = document.getElementById("loginButton");
-		loginButton.addEventListener('click', function(){
-			loginform.setAttribute("onsubmit", "logIn(this);return false;");
-		});
+		//loginform.addEventListener("submit", logIn);
     }
 
 };
@@ -143,87 +134,212 @@ var initStorage = function() {
     }
 };
 
+
+
+
+connection.onopen = function () {
+    connection.send("Ping");
+};
+
+connection.onerror = function (error) {
+    console.log("Websocket error" + error);
+};
+
+connection.onmessage = function (e) {
+    console.log("Server: " + e.data);
+}
+
+
 window.onload = function(){
 	//code that is executed as the page is loaded.
 	//You shall put your own custom code here.
 	//window.alert() is not allowed to be used in your implementation.
     initStorage();
     displayView();
+    var connection = new WebSocket('/echo');
 };
 
 var searchUser = function(formData) {
-    var ret = serverstub.getUserDataByEmail(localStorage.getItem("token"), formData.searchemail.value);
-    document.getElementById("loggedinfeedback").innerText = ret.message;
-    if (ret.success) {
-        document.getElementById("postonsearch").style.cssText="display:block";
-        document.getElementById("personalinfo2").style.cssText="display:block";
-        document.getElementById("showfirstname2").innerText = "First name: " + ret.data.firstname;
-        document.getElementById("showfamilyname2").innerText = "Family name: " + ret.data.familyname;
-        document.getElementById("showemail2").innerText = "Email: " + ret.data.email;
-        document.getElementById("showgender2").innerText = "Gender: " + ret.data.gender;
-        document.getElementById("showcity2").innerText = "City: " + ret.data.city;
-        document.getElementById("showcountry2").innerText = "Country: " + ret.data.country;
-        refreshMessages2();
+    var user = {
+        'token' : localStorage.getItem("token"),
+        'email' : document.getElementById('searchemail').value
+    };
 
-    } else {
-        document.getElementById("postonsearch").style.cssText="display:none";
-        document.getElementById("personalinfo2").style.cssText="display:none";
-    }
+    var con = new XMLHttpRequest();
+    con.open("POST", "/getuserdatabyemail", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                document.getElementById("postonsearch").style.cssText="display:block";
+                document.getElementById("personalinfo2").style.cssText="display:block";
+                document.getElementById("showfirstname2").innerText = "First name: " + ret.data.firstname;
+                document.getElementById("showfamilyname2").innerText = "Family name: " + ret.data.familyname;
+                document.getElementById("showemail2").innerText = "Email: " + ret.data.email;
+                document.getElementById("showgender2").innerText = "Gender: " + ret.data.gender;
+                document.getElementById("showcity2").innerText = "City: " + ret.data.city;
+                document.getElementById("showcountry2").innerText = "Country: " + ret.data.country;
+                refreshMessages2();
+
+            } else {
+                document.getElementById("postonsearch").style.cssText="display:none";
+                document.getElementById("personalinfo2").style.cssText="display:none";
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+        }
+    };
+    con.send(JSON.stringify(user));
 
 }
 
 var signOut = function() {
-    var ret = serverstub.signOut(localStorage.getItem("token"));
+    var user = {
+        'token' : localStorage.getItem("token")
+    };
 
-    if (ret.success) {
-        localStorage.setItem("token", "");
-        displayView();
-        document.getElementById("feedback").innerText = ret.message;
-    } else {
-        document.getElementById("loggedinfeedback").innerText = ret.message;
-    }
+    var con = new XMLHttpRequest();
+    con.open("POST", "/signout", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                localStorage.setItem("token", "");
+                displayView();
+                document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
+            } else {
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = "Server error";
+        }
+    };
+    con.send(JSON.stringify(user));
+
 }
 
 var refreshMessages = function(){
-    var ret = serverstub.getUserMessagesByToken(localStorage.getItem("token"));
-    document.getElementById("loggedinfeedback").innerText = ret.message;
-    if (ret.success && ret.data.length > 0) {
-        var msgcode = "";
-        for (i = 0; i < ret.data.length; i++) {
-            msgcode += "<div> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
+    var user = {
+        'token' : localStorage.getItem("token")
+    };
 
+    var con = new XMLHttpRequest();
+    con.open("POST", "/getusermessagesbytoken", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success && ret.data.length > 0) {
+                var msgcode = "";
+                for (i = 0; i < ret.data.length; i++) {
+                    msgcode += "<div> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
+
+                }
+                document.getElementById("showmessages").innerHTML = msgcode;
+            } else {
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
         }
-        document.getElementById("showmessages").innerHTML = msgcode;
-    }
+    };
+    con.send(JSON.stringify(user));
+
 }
 
 var refreshMessages2 = function(){
-    var ret = serverstub.getUserMessagesByEmail(localStorage.getItem("token"), document.getElementById("searchemail").value);
-    document.getElementById("loggedinfeedback").innerText = ret.message;
-    if (ret.success && ret.data.length > 0) {
-        var msgcode = "";
-        for (i = 0; i < ret.data.length; i++) {
-            msgcode += "<div> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
+    var user = {
+        'token' : localStorage.getItem("token"),
+        'email' : document.getElementById('searchemail').value
+    };
 
+    var con = new XMLHttpRequest();
+    con.open("POST", "/getusermessagesbyemail", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success && ret.data.length > 0) {
+                var msgcode = "";
+                for (i = 0; i < ret.data.length; i++) {
+                    msgcode += "<div> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
+
+                }
+                document.getElementById("showmessages2").innerHTML = msgcode;
+            } else {
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
         }
-        document.getElementById("showmessages2").innerHTML = msgcode;
-    }
+    };
+    con.send(JSON.stringify(user));
+
 }
 
 
 var postMessage = function(){
-    var ret = serverstub.postMessage(localStorage.getItem("token"), document.getElementById("inputmessage").value, null);
-    document.getElementById("inputmessage").value = "";
-    document.getElementById("loggedinfeedback").innerText = ret.message;
-    refreshMessages();
+    var user = {
+        'token' : localStorage.getItem("token"),
+        'email' : "",
+        'message' : document.getElementById("inputmessage").value
+    };
+
+    var con = new XMLHttpRequest();
+    con.open("POST", "/postmessage", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                document.getElementById("inputmessage").value = "";
+                document.getElementById("loggedinfeedback").innerText = ret.message;
+                refreshMessages();
+            } else {
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = "Server error";
+        }
+    };
+    con.send(JSON.stringify(user));
 
 }
 
 var postMessage2 = function(){
-    var ret = serverstub.postMessage(localStorage.getItem("token"), document.getElementById("inputmessage2").value, document.getElementById("searchemail").value);
-    document.getElementById("inputmessage2").value = "";
-    document.getElementById("loggedinfeedback").innerText = ret.message;
-    refreshMessages2();
+    var user = {
+        'token' : localStorage.getItem("token"),
+        'email' : document.getElementById('searchemail').value,
+        'message' : document.getElementById("inputmessage2").value
+    };
+
+    var con = new XMLHttpRequest();
+    con.open("POST", "/postmessage", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                document.getElementById("inputmessage2").value = "";
+                document.getElementById("loggedinfeedback").innerText = ret.message;
+                refreshMessages2();
+            } else {
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = "Server error";
+        }
+    };
+    con.send(JSON.stringify(user));
 
 }
 
@@ -263,34 +379,72 @@ var signUp = function(formData){
 	}
 };
 
-
-var test = function(formData){
-		document.getElementById("feedback").innerText = "123";
-};
-
 var logIn = function(formData) {
+    var user = {
+    'email': formData.loginemail.value.trim(),
+    'password': formData.loginpassword.value.trim()
+    };
 
-    var ret=serverstub.signIn(formData.loginemail.value, formData.loginpassword.value);
-    if (ret.success) {
-        localStorage.setItem("token", ret.data);
-        displayView();
-        document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
-    } else {
-        document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
-    }
+    var con = new XMLHttpRequest();
+    con.open("POST", "/signin", true);
+    con.setRequestHeader("Content-Type", "application/json");
+
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                localStorage.setItem("token", ret.data);
+                displayView();
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            } else {
+                document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+        } else {
+            document.getElementById("feedback").innerText = "Something went wrong";
+        }
+
+    };
+
+    con.send(JSON.stringify(user));
+
 
 };
 
 var changePassword = function(formData) {
-    if (formData.changepassword.value==formData.changepasswordrpt.value){
+    var user = {
+        'token' : localStorage.getItem("token"),
+        'oldpassword' : formData.oldpassword.value,
+        'newpassword' :formData.changepassword.value
+    };
 
+    if (formData.changepassword.value==formData.changepasswordrpt.value){
         if (formData.oldpassword.value != formData.changepassword.value) {
-            var ret = serverstub.changePassword(localStorage.getItem("token"), formData.oldpassword.value, formData.changepassword.value);
-            document.getElementById("loggedinfeedback").innerText = ret.message;
+
+            var con = new XMLHttpRequest();
+            con.open("POST", "/changepassword", true);
+            con.setRequestHeader("Content-Type", "application/json");
+            con.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Typical action to be performed when the document is ready:
+                    var ret = JSON.parse(con.responseText);
+                    if (ret.success) {
+                        document.getElementById("oldpassword").value = "";
+                        document.getElementById("changepassword").value = "";
+                        document.getElementById("changepasswordrpt").value = "";
+                    }
+
+                    document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                } else {
+
+                    document.getElementById("loggedinfeedback").innerText = "Server error";
+                }
+            };
+            con.send(JSON.stringify(user));
         } else {
             document.getElementById("loggedinfeedback").innerText = "You cannot reuse your old password";
         }
-
 
     } else {
         document.getElementById("loggedinfeedback").innerText = "Passwords don't match";
@@ -299,16 +453,33 @@ var changePassword = function(formData) {
 }
 
 var showUserInfo = function(){
-    var match = serverstub.getUserDataByToken(localStorage.getItem("token"));
-    document.getElementById("loggedinfeedback").innerText = match.message;
-    if (match.success) {
-        document.getElementById("showfirstname").innerText = "First name: " +  match.data.firstname;
-        document.getElementById("showfamilyname").innerText = "Family name: " +  match.data.familyname;
-        document.getElementById("showemail").innerText = "Email: " +  match.data.email;
-        document.getElementById("showgender").innerText = "Gender: " +  match.data.gender;
-        document.getElementById("showcity").innerText = "City: " +  match.data.city;
-        document.getElementById("showcountry").innerText = "Country: " +  match.data.country;
-    }
+
+    var user = {
+        'token' : localStorage.getItem("token")
+    };
+
+    var con = new XMLHttpRequest();
+    con.open("POST", "/getuserdatabytoken", true);
+    con.setRequestHeader("Content-Type", "application/json");
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                document.getElementById("showfirstname").innerText = "First name: " +  ret.data.firstname;
+                document.getElementById("showfamilyname").innerText = "Family name: " +  ret.data.familyname;
+                document.getElementById("showemail").innerText = "Email: " +  ret.data.email;
+                document.getElementById("showgender").innerText = "Gender: " +  ret.data.gender;
+                document.getElementById("showcity").innerText = "City: " +  ret.data.city;
+                document.getElementById("showcountry").innerText = "Country: " +  ret.data.country;
+            } else {
+                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            }
+
+            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+        }
+    };
+    con.send(JSON.stringify(user));
 
 
 
