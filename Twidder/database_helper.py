@@ -95,3 +95,18 @@ def delete_token(token):
         g.db.commit()
         return True
 
+def update_token(email, token):
+    g.db.execute("update tokens set token = ? where email = ?", [token, email])
+    g.db.commit()
+    return
+
+
+
+def is_logged_in(email):
+    cursor = g.db.execute("select * from tokens where email = ? ", [email])
+    rows = cursor.fetchall()
+    cursor.close()
+    if len(rows) != 0:
+        return True
+    else:
+        return False

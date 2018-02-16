@@ -137,17 +137,7 @@ var initStorage = function() {
 
 
 
-connection.onopen = function () {
-    connection.send("Ping");
-};
 
-connection.onerror = function (error) {
-    console.log("Websocket error" + error);
-};
-
-connection.onmessage = function (e) {
-    console.log("Server: " + e.data);
-}
 
 
 window.onload = function(){
@@ -155,8 +145,9 @@ window.onload = function(){
 	//You shall put your own custom code here.
 	//window.alert() is not allowed to be used in your implementation.
     initStorage();
+    console.log("Running dispay view next");
     displayView();
-    var connection = new WebSocket('/echo');
+
 };
 
 var searchUser = function(formData) {
@@ -380,6 +371,8 @@ var signUp = function(formData){
 };
 
 var logIn = function(formData) {
+
+
     var user = {
     'email': formData.loginemail.value.trim(),
     'password': formData.loginpassword.value.trim()
@@ -394,9 +387,27 @@ var logIn = function(formData) {
             // Typical action to be performed when the document is ready:
             var ret = JSON.parse(con.responseText);
             if (ret.success) {
+                var connection = new WebSocket('ws://localhost:5000/echo');
+
+                connection.onopen = function () {
+                connection.send(formData.loginemail.value.trim());
+                };
+
+                connection.onerror = function (error) {
+                    console.log("Websocket error" + error);
+                };
+
+                connection.onmessage = function (e) {
+                    console.log("Server: " + e.data);
+                    if (e.data == "Log out command!") {
+                        localStorage.setItem("token", "");
+                        displayView();
+                    }
+                };
                 localStorage.setItem("token", ret.data);
                 displayView();
                 document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+
             } else {
                 document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
             }
@@ -406,7 +417,7 @@ var logIn = function(formData) {
         }
 
     };
-
+    console.log(user);
     con.send(JSON.stringify(user));
 
 

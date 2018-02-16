@@ -4,17 +4,25 @@ from flask_sockets import Sockets
 import database_helper
 import json
 import random
+from geventwebsocket import WebSocketError
 
 
 app = Flask(__name__)
 app.debug = True
 sockets = Sockets(app)
 
-@sockets.route('/echo')
-def echo_sockets(ws):
-    while True:
-        message = ws.recieve()
-        ws.send(message)
+ws_dic = {}
+
+@app.route('/echo')
+def echo_sockets():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            try:
+                message = ws.receive()
+                ws_dic[message] = ws
+            except WebSocketError:
+                return 'ERROR'
 
 @app.before_request
 def before_request():
@@ -46,11 +54,19 @@ def sign_in():
         return json.dumps({'success':False, 'message':"Wrong password", 'data':""})
     else:
         token = generate_token()
-        res = database_helper.save_token(email, token)
-        if res:
-            return json.dumps({'success':True, 'message':"You successfully signed in", 'data':token})
+        if database_helper.is_logged_in(email):
+            ws = ws_dic[email]
+            ws.send("Log out command!")
+            ws.close()
+            del ws_dic[email]
+            database_helper.update_token(email, token)
+            return json.dumps({'success':True, 'message':"You successfully signed in (and your other logged in session was logged out)", 'data':token})
         else:
-            return json.dumps({'success':False, 'message':"Sign in was unsuccessful", 'data':""})
+            res = database_helper.save_token(email, token)
+            if res:
+                return json.dumps({'success':True, 'message':"You successfully signed in", 'data':token})
+            else:
+                return json.dumps({'success':False, 'message':"Sign in was unsuccessful", 'data':""})
 
 
 @app.route("/signup", methods=['POST'])
