@@ -177,10 +177,10 @@ var searchUser = function(formData) {
             } else {
                 document.getElementById("postonsearch").style.cssText="display:none";
                 document.getElementById("personalinfo2").style.cssText="display:none";
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            console.log(ret.message);
         }
     };
     con.send(JSON.stringify(user));
@@ -202,12 +202,12 @@ var signOut = function() {
             if (ret.success) {
                 localStorage.setItem("token", "");
                 displayView();
-                document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("feedback").innerText = ret.message;
             } else {
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = "Server error";
+            document.getElementById("loggedinfeedback").innerText = "Server error1";
         }
     };
     con.send(JSON.stringify(user));
@@ -234,10 +234,10 @@ var refreshMessages = function(){
                 }
                 document.getElementById("showmessages").innerHTML = msgcode;
             } else {
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            document.getElementById("loggedinfeedback").innerText = ret.message;
         }
     };
     con.send(JSON.stringify(user));
@@ -265,10 +265,10 @@ var refreshMessages2 = function(){
                 }
                 document.getElementById("showmessages2").innerHTML = msgcode;
             } else {
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            document.getElementById("loggedinfeedback").innerText = ret.message;
         }
     };
     con.send(JSON.stringify(user));
@@ -292,13 +292,13 @@ var postMessage = function(){
             var ret = JSON.parse(con.responseText);
             if (ret.success) {
                 document.getElementById("inputmessage").value = "";
-                document.getElementById("loggedinfeedback").innerText = ret.message;
                 refreshMessages();
+                console.log( ret.message);
             } else {
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = "Server error";
+
         }
     };
     con.send(JSON.stringify(user));
@@ -321,13 +321,12 @@ var postMessage2 = function(){
             var ret = JSON.parse(con.responseText);
             if (ret.success) {
                 document.getElementById("inputmessage2").value = "";
-                document.getElementById("loggedinfeedback").innerText = ret.message;
                 refreshMessages2();
+                console.log( ret.message);
             } else {
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = "Server error";
         }
     };
     con.send(JSON.stringify(user));
@@ -360,7 +359,7 @@ var signUp = function(formData){
             if (this.readyState == 4 && this.status == 200) {
                 // Typical action to be performed when the document is ready:
                 var ret = JSON.parse(con.responseText);
-                document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("feedback").innerText = ret.message;
             }
         };
         con.send(JSON.stringify(user));
@@ -406,10 +405,10 @@ var logIn = function(formData) {
                 };
                 localStorage.setItem("token", ret.data);
                 displayView();
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
 
             } else {
-                document.getElementById("feedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("feedback").innerText = ret.message;
             }
 
         } else {
@@ -446,10 +445,10 @@ var changePassword = function(formData) {
                         document.getElementById("changepasswordrpt").value = "";
                     }
 
-                    document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                    document.getElementById("loggedinfeedback").innerText = ret.message;
                 } else {
 
-                    document.getElementById("loggedinfeedback").innerText = "Server error";
+                    document.getElementById("loggedinfeedback").innerText = "Server error4";
                 }
             };
             con.send(JSON.stringify(user));
@@ -484,10 +483,10 @@ var showUserInfo = function(){
                 document.getElementById("showcity").innerText = "City: " +  ret.data.city;
                 document.getElementById("showcountry").innerText = "Country: " +  ret.data.country;
             } else {
-                document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+                document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = ret.success+ret.message+ret.data;
+            document.getElementById("loggedinfeedback").innerText = ret.message;
         }
     };
     con.send(JSON.stringify(user));
