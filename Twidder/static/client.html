@@ -5,6 +5,7 @@
         <title>Twidder</title>
 		<link href="static/client.css" type="text/css" rel="stylesheet">
 		<script src="static/client.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 		<script id="welcomeview" type="text/view">
 			<div id="page">
 				<div id="logoimage"><img src="static/wimage.png" alt="logo"></div>
@@ -47,6 +48,7 @@
             <button type="submit" id= "accountbutton">Account</button>
             <button type="submit" id= "browsebutton">Browse</button>
             </div>
+            <div id="chart"><canvas id="myChart"></canvas></div>
             <div id="loggedinfeedback">Feedback</div>
 
 
@@ -60,7 +62,7 @@
                     <div id="showcountry"></div>
                 </div>
                 <div id="postmessage">
-                    <textarea id="inputmessage" rows="3"></textarea>
+                    <textarea id="inputmessage" rows="3" ondrop="drop(event)" ondragover="allowDrop(event)"></textarea>
                     <button type="submit" id="postmessagebutton">Post Message</button>
                 </div>
                 <button type="submit" id="refreshmessages">Refresh messages</button>
@@ -104,7 +106,7 @@
                 <div id="postonsearch">
                 <div class="header2">Post a message</div>
                 <div id="postmessage2">
-                    <textarea id="inputmessage2" rows="3"></textarea>
+                    <textarea id="inputmessage2" rows="3" ondrop="drop(event)" ondragover="allowDrop(event)"></textarea>
                     <button type="submit" id="postmessagebutton2">Post Message</button>
                 </div>
                 <button type="submit" id="refreshmessages2">Refresh messages</button>
@@ -119,6 +121,8 @@
             </div>
 
         </script>
+
+
 	</head>
 
 	<body>

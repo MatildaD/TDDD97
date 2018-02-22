@@ -191,3 +191,9 @@ textarea{
     text-align: center;
 ;
 }
+
+#chart{
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+}

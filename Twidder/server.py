@@ -5,6 +5,7 @@ import database_helper
 import json
 import random
 from geventwebsocket import WebSocketError
+import time
 
 
 app = Flask(__name__)
@@ -21,6 +22,9 @@ def echo_sockets():
             try:
                 message = ws.receive()
                 ws_dic[message] = ws
+                for user in ws_dic.keys():
+                    print user
+                    ws_dic[user].send(str(len(ws_dic.keys())))
             except WebSocketError:
                 return 'ERROR'
 
@@ -34,6 +38,7 @@ def teardown_request(exception):
 
 @app.route("/sup")
 def hello2():
+    time.sleep(1)
     return "Sup?"
 
 @app.route("/")
@@ -67,6 +72,7 @@ def sign_in():
                 return json.dumps({'success':True, 'message':"You successfully signed in", 'data':token})
             else:
                 return json.dumps({'success':False, 'message':"Sign in was unsuccessful", 'data':""})
+
 
 
 @app.route("/signup", methods=['POST'])

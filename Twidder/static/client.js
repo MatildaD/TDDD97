@@ -121,6 +121,7 @@ displayView = function(){
         profilehandler();
         showUserInfo();
         refreshMessages();
+        loadChart();
     } else {
         var element = document.getElementById("welcomeview");
         document.body.innerHTML = element.innerHTML;
@@ -207,7 +208,6 @@ var signOut = function() {
                 document.getElementById("loggedinfeedback").innerText = ret.message;
             }
 
-            document.getElementById("loggedinfeedback").innerText = "Server error1";
         }
     };
     con.send(JSON.stringify(user));
@@ -229,7 +229,7 @@ var refreshMessages = function(){
             if (ret.success && ret.data.length > 0) {
                 var msgcode = "";
                 for (i = 0; i < ret.data.length; i++) {
-                    msgcode += "<div> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
+                    msgcode += "<div draggable=\"true\" ondragstart=\"drag(event)\" id=\"drag" + i + "\"> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
 
                 }
                 document.getElementById("showmessages").innerHTML = msgcode;
@@ -260,7 +260,7 @@ var refreshMessages2 = function(){
             if (ret.success && ret.data.length > 0) {
                 var msgcode = "";
                 for (i = 0; i < ret.data.length; i++) {
-                    msgcode += "<div> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
+                    msgcode += "<div draggable=\"true\" ondragstart=\"drag(event)\" id=\"drag2" + i + "\"> From " + ret.data[i].writer + ": " + ret.data[i].content + "</div>";
 
                 }
                 document.getElementById("showmessages2").innerHTML = msgcode;
@@ -369,6 +369,10 @@ var signUp = function(formData){
 	}
 };
 
+var timewaster = function() {
+    console.log("Wasting some time");
+}
+
 var logIn = function(formData) {
 
 
@@ -384,6 +388,7 @@ var logIn = function(formData) {
     con.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             // Typical action to be performed when the document is ready:
+
             var ret = JSON.parse(con.responseText);
             if (ret.success) {
                 var connection = new WebSocket('ws://localhost:5000/echo');
@@ -401,6 +406,10 @@ var logIn = function(formData) {
                     if (e.data == "Log out command!") {
                         localStorage.setItem("token", "");
                         displayView();
+                    } else {
+                        chart.data.datasets[0].data[0] = e.data;
+                        chart.update();
+                        console.log(e.data);
                     }
                 };
                 localStorage.setItem("token", ret.data);
@@ -418,9 +427,10 @@ var logIn = function(formData) {
     };
     console.log(user);
     con.send(JSON.stringify(user));
-
-
 };
+
+
+
 
 var changePassword = function(formData) {
     var user = {
@@ -490,7 +500,55 @@ var showUserInfo = function(){
         }
     };
     con.send(JSON.stringify(user));
-
-
-
 }
+
+//Drag and drop
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    var message = document.getElementById(data).innerText;
+    var col = message.indexOf(":");
+    message = message.substr(col+2);
+    ev.target.value = message;
+}
+
+var chart;
+
+function loadChart() {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+        // The data for our dataset
+        data: {
+            labels: ["Logged in users", "No. Messages", "Registered users"],
+            datasets: [{
+                label: "Information",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [0, 10, 5]
+            }]
+        },
+
+        // Configuration options go here
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
