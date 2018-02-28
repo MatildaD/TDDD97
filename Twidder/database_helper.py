@@ -110,3 +110,15 @@ def is_logged_in(email):
         return True
     else:
         return False
+
+def registered_users():
+    cursor = g.db.execute("select * from user ")
+    rows = cursor.fetchall()
+    cursor.close()
+    return len(rows)
+
+def number_of_messages(email):
+    cursor = g.db.execute("select * from messages where toemail = ? ", [email])
+    rows = cursor.fetchall()
+    cursor.close()
+    return len(rows)

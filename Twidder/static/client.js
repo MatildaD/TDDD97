@@ -188,6 +188,65 @@ var searchUser = function(formData) {
 
 }
 
+var logIn = function(formData) {
+
+
+    var user = {
+    'email': formData.loginemail.value.trim(),
+    'password': formData.loginpassword.value.trim()
+    };
+
+    var con = new XMLHttpRequest();
+    con.open("POST", "/signin", true);
+    con.setRequestHeader("Content-Type", "application/json");
+
+    con.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+
+            var ret = JSON.parse(con.responseText);
+            if (ret.success) {
+                var connection = new WebSocket('ws://localhost:5000/echo');
+
+                connection.onopen = function () {
+                connection.send(formData.loginemail.value.trim());
+                };
+
+                connection.onerror = function (error) {
+                    console.log("Websocket error" + error);
+                };
+
+                connection.onmessage = function (e) {
+                    console.log("Server: " + e.data);
+                    if (e.data == "Log out command!") {
+                        localStorage.setItem("token", "");
+                        displayView();
+                    } else {
+                        var res = e.data.split(":");
+                        chart.data.datasets[0].data[0] = res[0];
+                        chart.data.datasets[0].data[1] = res[1];
+                        chart.data.datasets[0].data[2] = res[2];
+                        chart.update();
+                        console.log(e.data);
+                    }
+                };
+                localStorage.setItem("token", ret.data);
+                displayView();
+                document.getElementById("loggedinfeedback").innerText = ret.message;
+
+            } else {
+                document.getElementById("feedback").innerText = ret.message;
+            }
+
+        } else {
+            document.getElementById("feedback").innerText = "Something went wrong";
+        }
+
+    };
+    console.log(user);
+    con.send(JSON.stringify(user));
+};
+
 var signOut = function() {
     var user = {
         'token' : localStorage.getItem("token")
@@ -373,61 +432,7 @@ var timewaster = function() {
     console.log("Wasting some time");
 }
 
-var logIn = function(formData) {
 
-
-    var user = {
-    'email': formData.loginemail.value.trim(),
-    'password': formData.loginpassword.value.trim()
-    };
-
-    var con = new XMLHttpRequest();
-    con.open("POST", "/signin", true);
-    con.setRequestHeader("Content-Type", "application/json");
-
-    con.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            // Typical action to be performed when the document is ready:
-
-            var ret = JSON.parse(con.responseText);
-            if (ret.success) {
-                var connection = new WebSocket('ws://localhost:5000/echo');
-
-                connection.onopen = function () {
-                connection.send(formData.loginemail.value.trim());
-                };
-
-                connection.onerror = function (error) {
-                    console.log("Websocket error" + error);
-                };
-
-                connection.onmessage = function (e) {
-                    console.log("Server: " + e.data);
-                    if (e.data == "Log out command!") {
-                        localStorage.setItem("token", "");
-                        displayView();
-                    } else {
-                        chart.data.datasets[0].data[0] = e.data;
-                        chart.update();
-                        console.log(e.data);
-                    }
-                };
-                localStorage.setItem("token", ret.data);
-                displayView();
-                document.getElementById("loggedinfeedback").innerText = ret.message;
-
-            } else {
-                document.getElementById("feedback").innerText = ret.message;
-            }
-
-        } else {
-            document.getElementById("feedback").innerText = "Something went wrong";
-        }
-
-    };
-    console.log(user);
-    con.send(JSON.stringify(user));
-};
 
 
 

@@ -21,10 +21,12 @@ def echo_sockets():
         while True:
             try:
                 message = ws.receive()
-                ws_dic[message] = ws
+                if message != None:
+                    ws_dic[message] = ws
+                print ws_dic
                 for user in ws_dic.keys():
-                    print user
-                    ws_dic[user].send(str(len(ws_dic.keys())))
+                    print "logging in " + str(len(ws_dic.keys()))
+                    ws_dic[user].send(str(len(ws_dic.keys())) + ":" + str(database_helper.number_of_messages(user)) + ":" + str(database_helper.registered_users()))
             except WebSocketError:
                 return 'ERROR'
 
@@ -63,7 +65,11 @@ def sign_in():
             ws = ws_dic[email]
             ws.send("Log out command!")
             ws.close()
+            print "before delete:"
+            print ws_dic
             del ws_dic[email]
+            print "after delete"
+            print ws_dic
             database_helper.update_token(email, token)
             return json.dumps({'success':True, 'message':"You successfully signed in (and your other logged in session was logged out)", 'data':token})
         else:
@@ -93,6 +99,9 @@ def sign_up():
 
     result = database_helper.insert_user(email, password, firstname, familyname, gender, city, country)
     if result == True:
+        for user in ws_dic.keys():
+            ws_dic[user].send(str(len(ws_dic.keys())) + ":" + str(database_helper.number_of_messages(user)) + ":" + str(database_helper.registered_users()))
+
         return json.dumps({'success':True, 'message':"You successfully signed up", 'data':""})
     else:
         return json.dumps({'success':False, 'message':"Sign up failed", 'data':""})
@@ -101,8 +110,14 @@ def sign_up():
 @app.route("/signout", methods=['POST'])
 def sign_out():
     token = request.json['token']
+    email = database_helper.get_email_by_token(token)
     res = database_helper.delete_token(token)
     if res:
+        del ws_dic[email]
+        for user in ws_dic.keys():
+            print user
+            print len(ws_dic.keys())
+            ws_dic[user].send(str(len(ws_dic.keys()))  + ":" + str(database_helper.number_of_messages(user)) + ":" + str(database_helper.registered_users()))
         return json.dumps({'success':True, 'message':"You successfully signed out", 'data':""})
     else:
         return json.dumps({'success':False, 'message':"Your are not signed in", 'data':""})
@@ -217,6 +232,11 @@ def post_message():
 
     result = database_helper.store_message(toemail, fromemail, message)
     if result:
+        try:
+            ws_dic[toemail].send(str(len(ws_dic.keys()))  + ":" + str(database_helper.number_of_messages(toemail)) + ":" + str(database_helper.registered_users()))
+        except:
+            pass
+
         return json.dumps({'success':result, 'message':"You succesfully posted a message", 'data':message})
     else:
         return json.dumps({'success':result, 'message':"Your message was not posted", 'data':""})
